@@ -38,7 +38,7 @@ javascript:(function () {
     }
 
     function timeStr(seconds) {
-        var d = moment.duration(seconds, "seconds");
+        let d = moment.duration(seconds, "seconds");
         return moment.utc(d.asMilliseconds()).format("H:mm:ss.SS");
     }
 
@@ -62,18 +62,14 @@ javascript:(function () {
         log(timeStr(video.currentTime), "time");
     }
 
-    function onPause(video) {
-        video.pause();
-        log(timeStr(video.currentTime), "paused at");
-    }
-
-    function onPlay(video) {
-        video.play();
-        log(timeStr(video.currentTime), "resumed at");
-    }
-
-    function vid() {
-        return document.getElementsByTagName("video")[0] || {};
+    function playPause(video) {
+        if (video.paused) {
+            video.play();
+            log(timeStr(video.currentTime), "played");
+        } else {
+            video.pause();
+            log(timeStr(video.currentTime), "paused");
+        }
     }
 
     function loadSpeedVid() {
@@ -89,59 +85,59 @@ javascript:(function () {
     }
 
     function loadMain() {
-        document.addEventListener("keydown", (e) => {
+        window.addEventListener("keydown", (e) => {
+            let video = document.getElementsByTagName("video");
+            if(video.length < 1) {
+                return;
+            }
+
             switch (e.key) {
                 case "+":
                 case "=":
-                    appendSpeed(vid(), 0.25);
+                    appendSpeed(video[0], 0.25);
                     break;
                 case "-":
                 case "_":
-                    appendSpeed(vid(), -0.25);
+                    appendSpeed(video[0], -0.25);
                     break;
                 case "0":
                 case "1":
-                    setSpeed(vid(), 1);
+                    setSpeed(video[0], 1);
                     break;
                 case "2":
-                    setSpeed(vid(), 2);
+                    setSpeed(video[0], 2);
                     break;
                 case "3":
-                    setSpeed(vid(), 3);
+                    setSpeed(video[0], 3);
                     break;
                 case "4":
-                    setSpeed(vid(), 4);
+                    setSpeed(video[0], 4);
                     break;
                 case "5":
-                    setSpeed(vid(), 5);
+                    setSpeed(video[0], 5);
                     break;
                 case "6":
-                    setSpeed(vid(), 6);
+                    setSpeed(video[0], 6);
                     break;
                 case "7":
-                    setSpeed(vid(), 7);
+                    setSpeed(video[0], 7);
                     break;
                 case "8":
-                    setSpeed(vid(), 8);
+                    setSpeed(video[0], 8);
                     break;
                 case "9":
-                    setSpeed(vid(), 9);
+                    setSpeed(video[0], 9);
                     break;
                 case "}":
                 case "]":
-                    onRightBracket(vid());
+                    onRightBracket(video[0]);
                     break;
                 case "{":
                 case "[":
-                    onLeftBracket(vid());
+                    onLeftBracket(video[0]);
                     break;
                 case "p":
-                case "P":
-                    onPause(vid());
-                    break;
-                case "o":
-                case "O":
-                    onPlay(vid());
+                    playPause(video[0]);
                     break;
                 default:
                     return;
