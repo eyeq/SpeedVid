@@ -4,11 +4,28 @@ javascript:(function () {
         return;
     }
 
-    var reqs = [
-        "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js",
-        "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js",
-        "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
-    ];
+    function appendCss(url) {
+        return new Promise(resolve => {
+            let el = document.createElement("link");
+            el.addEventListener("load", resolve, false);
+            el.setAttribute("rel", "stylesheet");
+            el.setAttribute("type", "text/css");
+            el.setAttribute("href", url);
+
+            document.body.appendChild(el);
+        });
+    }
+
+    function appendScript(url) {
+        return new Promise(resolve => {
+            let el = document.createElement('script');
+            el.addEventListener("load", resolve, false);
+            el.setAttribute("type", "text/javascript");
+            el.setAttribute("src", url);
+
+            document.body.appendChild(el);
+        });
+    }
 
     function keyDownForVideo(e) {
         if (!(e.shiftKey && e.ctrlKey)) {
@@ -113,29 +130,13 @@ javascript:(function () {
     }
 
     function loadSpeedVid() {
-        var l = document.createElement("link");
-        l.href = "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css";
-        l.rel = "stylesheet";
-        document.body.appendChild(l);
-
-        loadReqs();
-    }
-
-    function loadReqs() {
-        if (reqs.length) {
-            var req = reqs.pop();
-            var s = document.createElement("script");
-            s.src = req;
-
-            if (s.addEventListener) {
-                s.addEventListener("load", loadReqs, false);
-            } else if (s.readyState) {
-                s.onreadystatechange = loadReqs;
-            }
-            document.body.appendChild(s);
-        } else {
-            loadMain();
-        }
+        appendScript("https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
+            .then(() => Promise.all([
+                    appendCss("https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"),
+                    appendScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"),
+                    appendScript("https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"),
+                ])
+            ).then(loadMain);
     }
 
     function loadMain() {
