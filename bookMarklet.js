@@ -42,20 +42,13 @@ javascript:(function () {
         return moment.utc(d.asMilliseconds()).format("H:mm:ss.SS");
     }
 
-    function onPlus(video) {
-        video.playbackRate += 0.25;
+    function appendSpeed(video, accel) {
+        video.playbackRate = Math.max(0.25, video.playbackRate + accel);
         log(video.playbackRate, "speed");
     }
 
-    function onMinus(video) {
-        if(video.playbackRate > 0.25) {
-            video.playbackRate -= 0.25;
-        }
-        log(video.playbackRate, "speed");
-    }
-
-    function onZero(video) {
-        video.playbackRate = 1;
+    function setSpeed(video, speed) {
+        video.playbackRate = Math.max(0.25, speed);
         log(video.playbackRate, "speed");
     }
 
@@ -100,15 +93,39 @@ javascript:(function () {
             switch (e.key) {
                 case "+":
                 case "=":
-                    onPlus(vid());
+                    appendSpeed(vid(), 0.25);
                     break;
                 case "-":
                 case "_":
-                    onMinus(vid());
+                    appendSpeed(vid(), -0.25);
                     break;
-                case ")":
                 case "0":
-                    onZero(vid());
+                case "1":
+                    setSpeed(vid(), 1);
+                    break;
+                case "2":
+                    setSpeed(vid(), 2);
+                    break;
+                case "3":
+                    setSpeed(vid(), 3);
+                    break;
+                case "4":
+                    setSpeed(vid(), 4);
+                    break;
+                case "5":
+                    setSpeed(vid(), 5);
+                    break;
+                case "6":
+                    setSpeed(vid(), 6);
+                    break;
+                case "7":
+                    setSpeed(vid(), 7);
+                    break;
+                case "8":
+                    setSpeed(vid(), 8);
+                    break;
+                case "9":
+                    setSpeed(vid(), 9);
                     break;
                 case "}":
                 case "]":
