@@ -16,6 +16,7 @@ Quick Start (Chrome):
 Usage:
 
 - "p" play/pause
+- "m" mute/unmute
 - "[" skip back 5 seconds
 - "]" skip ahead 5 seconds
 - "0" set speed to 1.0x

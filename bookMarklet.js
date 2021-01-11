@@ -72,6 +72,16 @@ javascript:(function () {
         }
     }
 
+    function muteUnmute(video) {
+        if(video.muted) {
+            video.muted = false;
+            log(timeStr(video.currentTime), "unmuted");
+        } else {
+            video.muted = true;
+            log(timeStr(video.currentTime), "muted");
+        }
+    }
+
     function loadSpeedVid() {
         window.speedVidHighlander = true;
 
@@ -138,6 +148,9 @@ javascript:(function () {
                     break;
                 case "p":
                     playPause(video[0]);
+                    break;
+                case "m":
+                    muteUnmute(video[0]);
                     break;
                 default:
                     return;
