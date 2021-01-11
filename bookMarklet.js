@@ -27,61 +27,9 @@ javascript:(function () {
         });
     }
 
-    function keyDownForVideo(e) {
-        if (!(e.shiftKey && e.ctrlKey)) {
-            return;
-        }
-
-        switch (e.key) {
-            case "+":
-            case "=":
-                onPlus();
-                break;
-            case "-":
-            case "_":
-                onMinus();
-                break;
-            case ")":
-            case "0":
-                onZero();
-                break;
-            case "}":
-            case "]":
-                onRightBracket();
-                break;
-            case "{":
-            case "[":
-                onLeftBracket();
-                break;
-            case "p":
-            case "P":
-                onPause();
-                break;
-            case "o":
-            case "O":
-                onPlay();
-                break;
-        }
-    }
-
-    function vid() {
-        return document.getElementsByTagName("video")[0] || {};
-    }
-
-    function precision(n, p) {
-        p = p || 0;
-        return Math.round(n * Math.pow(10, p)) / Math.pow(10, p);
-    }
-
-    function timeStr(seconds) {
-        var d = moment.duration(seconds, "seconds");
-        return moment.utc(d.asMilliseconds()).format("H:mm:ss.SS");
-    }
-
     function log(msg, subTitle) {
-        /*var out = document.getElementById("out");
-        out.innerText = msg;*/
         console.log(msg);
+
         toastr.remove();
         toastr.options.closeDuration = 100;
         toastr.options.timeOut = 300;
@@ -89,47 +37,55 @@ javascript:(function () {
         toastr.info(msg, "Speed Vid" + (subTitle ? " - " + subTitle : ""));
     }
 
-    const speedStep = 1.1;
-    const valuePrecision = 2;
-
-    function onPlus() {
-        vid().playbackRate *= speedStep;
-        vid().playbackRate = precision(vid().playbackRate, valuePrecision);
-        log(vid().playbackRate, "speed");
+    function timeStr(seconds) {
+        var d = moment.duration(seconds, "seconds");
+        return moment.utc(d.asMilliseconds()).format("H:mm:ss.SS");
     }
 
-    function onMinus() {
-        vid().playbackRate /= speedStep;
-        vid().playbackRate = precision(vid().playbackRate, valuePrecision);
-        log(vid().playbackRate, "speed");
+    function onPlus(video) {
+        video.playbackRate += 0.25;
+        log(video.playbackRate, "speed");
     }
 
-    function onZero() {
-        vid().playbackRate = 1;
-        log(vid().playbackRate, "speed");
+    function onMinus(video) {
+        if(video.playbackRate > 0.25) {
+            video.playbackRate -= 0.25;
+        }
+        log(video.playbackRate, "speed");
     }
 
-    function onLeftBracket() {
-        vid().currentTime -= 5;
-        log(timeStr(vid().currentTime), "time");
+    function onZero(video) {
+        video.playbackRate = 1;
+        log(video.playbackRate, "speed");
     }
 
-    function onRightBracket() {
-        vid().currentTime += 5;
-        log(timeStr(vid().currentTime), "time");
+    function onLeftBracket(video) {
+        video.currentTime -= 5;
+        log(timeStr(video.currentTime), "time");
     }
 
-    function onPause() {
-        vid().pause();
-        log(timeStr(vid().currentTime), "paused at");
+    function onRightBracket(video) {
+        video.currentTime += 5;
+        log(timeStr(video.currentTime), "time");
     }
 
-    function onPlay() {
-        vid().play();
-        log(timeStr(vid().currentTime), "resumed at");
+    function onPause(video) {
+        video.pause();
+        log(timeStr(video.currentTime), "paused at");
+    }
+
+    function onPlay(video) {
+        video.play();
+        log(timeStr(video.currentTime), "resumed at");
+    }
+
+    function vid() {
+        return document.getElementsByTagName("video")[0] || {};
     }
 
     function loadSpeedVid() {
+        window.speedVidHighlander = true;
+
         appendScript("https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
             .then(() => Promise.all([
                     appendCss("https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"),
@@ -140,9 +96,43 @@ javascript:(function () {
     }
 
     function loadMain() {
-        document.addEventListener("keydown", keyDownForVideo, false);
+        document.addEventListener("keydown", (e) => {
+            switch (e.key) {
+                case "+":
+                case "=":
+                    onPlus(vid());
+                    break;
+                case "-":
+                case "_":
+                    onMinus(vid());
+                    break;
+                case ")":
+                case "0":
+                    onZero(vid());
+                    break;
+                case "}":
+                case "]":
+                    onRightBracket(vid());
+                    break;
+                case "{":
+                case "[":
+                    onLeftBracket(vid());
+                    break;
+                case "p":
+                case "P":
+                    onPause(vid());
+                    break;
+                case "o":
+                case "O":
+                    onPlay(vid());
+                    break;
+                default:
+                    return;
+            }
+            e.stopPropagation();
+        }, true);
+
         log("Speed Vid - loaded");
-        window.speedVidHighlander = true;
     }
 
     loadSpeedVid();

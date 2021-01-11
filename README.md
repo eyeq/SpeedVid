@@ -17,8 +17,8 @@ Quick Start (Chrome):
   - "[" skip back 5 seconds
   - "]" skip ahead 5 seconds
   - "0" reset speed to 1.0x
-  - "-" decrease current speed by a factor of 1.1
-  - "+" increase current speed by a factor of 1.1
+  - "-" decrease speed
+  - "+" increase speed
   
 Audio tends to crap out below .5x and above 4.0x.
 If you don't like JQuery use the noJQ version (you loose the tooltips though).
